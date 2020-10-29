@@ -15,7 +15,7 @@ label = tk.Label(canvas,text='CIS Job Board', font=(None, 25), height=2)
 label.grid(row=0, column=0, columnspan=6)
 
 label2 = tk.Label(canvas, text='Search for a job title, and see results from the most popular job board sites \n \
-    (Indeed, Linkedin, Glassdoor, and Monster)')
+    (Indeed, Linkedin, and Monster)')
 label2.grid(row=1, column=0)
 
 
