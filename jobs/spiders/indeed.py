@@ -11,14 +11,14 @@ class IndeedSpider(scrapy.Spider):
         entry = response.css('.jobsearch-SerpJobCard')
         titles = entry.xpath('.//h2/a/@title').extract()
         links = entry.xpath('.//h2/a/@href').extract()
-        absolute_links = []
+        absolute_url_list = []
         for link in links:
-            #absolute_url = urljoin('https://www.indeed.com/q-computer-information-systems-jobs.html',link)
-            #yield {'links': response.follow(link, callback=self.parse)}
-            absolute_links = (yield response.follow(link, callback=self.parse)).append()
-        yield {'titles':titles,'links':absolute_links}
+            #yield response.follow(link, callback=self.parse)
+            absolute_url = response.follow(link, callback=self.parse)
+            absolute_url_list.append(absolute_url)
 
-# figure out how to put absolute links in the same dictionary as titles
+        yield {'titles':titles, 'links':absolute_url_list}
+
 # how is the yielded information stored? 
 # use main.py file to import and pre-process data from the spiders
 # format the scraped data into the tkinter GUI 
