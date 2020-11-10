@@ -1,3 +1,2 @@
-# Job Board Aggregator
-Search for a job title, and see results from the most popular job board sites
-    (Indeed, Linkedin, Glassdoor, and Monster
+# CIS Job Board Aggregator
+A web scraping GUI that returns results from Indeed, Linkedin, and Monster that returns results from searching the string "computer information systems". 
