@@ -7,6 +7,7 @@ import scrapy
 from scrapy.crawler import CrawlerProcess
 import pandas as pd 
 import os
+import webbrowser
 
 # Create Tkinter root window
 root = tk.Tk()
@@ -16,13 +17,15 @@ canvas = tk.Canvas(root)
 canvas.pack()
 
 
-# Title and Description
+# GUI Title and Description
 label = tk.Label(canvas,text='CIS Job Board', font=(None, 25), height=2)
-label.grid(row=0, column=0, columnspan=6)
+label.pack()
+#label.grid(row=0,column=0, columnspan=2)
 
 label2 = tk.Label(canvas, text='See results from the top Computer Information System jobs from the most popular job boards \n \
     (Indeed, Linkedin, and Monster)')
-label2.grid(row=1, column=0)
+label2.pack()
+#label2.grid(row=1,column=0, columnspan=2)
 
 
 # Run Spiders
@@ -65,8 +68,12 @@ del indeed_links_list[14] # removes bad URL
 titles_string1 = indeed_sdata.iloc[0,1]
 indeed_titles_list = titles_string1.split(",")
 
-del indeed_titles_list[0]
+del indeed_titles_list[0] #delete ad on the first entry
 
+for z in indeed_titles_list:  # account for possibility of city,state format splitting at the comma 
+    if len(z) < 7:
+        indexValue1 = indeed_titles_list.index(z)
+        indeed_titles_list.pop(indexValue1)
 
 indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':indeed_links_list}) #indeed dataframe
 
@@ -83,7 +90,13 @@ linkedin_links_list = linksA.split(",")
 titlesA = linkedin_sdata.iloc[0,1]
 linkedin_titles_list = titlesA.split(',')
 
-linkedin_df = pd.DataFrame({'titles':linkedin_titles_list, 'link':linkedin_links_list}) #linkedin dataframe
+for y in linkedin_titles_list:  # account for possibility of city,state format splitting at the comma 
+    if len(y) < 7:
+        indexValue2 = linkedin_titles_list.index(y)
+        linkedin_titles_list.pop(indexValue2)
+
+linkedin_df = pd.DataFrame({'titles':linkedin_titles_list, 'links':linkedin_links_list}) #linkedin dataframe
+
 
 
 #Monster
@@ -93,21 +106,40 @@ monster_links_list = monster_links_string.split(",")
 monster_titles_string = monster_sdata.iloc[0,5]
 monster_titles_list = monster_titles_string.split(",")
 
-for i in monster_titles_list:  # account for possibility of city,state format splititng at the comma 
+for i in monster_titles_list:  # account for possibility of city,state format splitting at the comma 
     if len(i) < 7:
-        indexValue = monster_titles_list.index(i)
-        monster_titles_list.pop(indexValue)
+        indexValue3 = monster_titles_list.index(i)
+        monster_titles_list.pop(indexValue3)
 
     
 monster_df = pd.DataFrame({'titles':monster_titles_list,'links':monster_links_list})  # monster dataframe
 
 
-# Make entries in the GUI that dispaly job entries from dataframes
+# Make entries in the GUI that shows job entries from dataframes
+   #join all dataframes of data
+complete_df = pd.concat([indeed_df,linkedin_df,monster_df], axis=0)
+complete_df.reset_index(inplace=True)
+complete_df.drop(['index'], axis=1, inplace=True) #join all datafraemes into one
+
+# create a column of tuples with title and links
+complete_df['tuples'] = complete_df[['titles', 'links']].apply(tuple, axis=1)
+complete_dict = {}
+for x, y in complete_df['tuples']:
+    complete_dict[x] = y    #create dictionary from the tuple column
+
+# Create buttons
 
 
+def clickURL(title):
+    link = complete_dict.get(title)
+    webbrowser.open(link,new=0)
+
+for title in complete_dict:
+    tbutton = tk.Button(canvas, text=title, bg='gray', command=lambda x=title: clickURL(x))
+    tbutton.pack()
 
 
-
-
+#link = complete_df.loc[complete_df['titles'] == title, 'links'].iloc[0]
+#tbutton.cget('text')
 
 root.mainloop()
