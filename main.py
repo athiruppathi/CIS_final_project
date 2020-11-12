@@ -62,7 +62,7 @@ for i in link_list1:
     indeed_links_list.append(i)
     
 del indeed_links_list[0]
-del indeed_links_list[14] # removes bad URL 
+#del indeed_links_list[14] # removes bad URL 
 
 
 titles_string1 = indeed_sdata.iloc[0,1]
@@ -79,21 +79,19 @@ indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':indeed_links_list}
 
 
 #Linkedin
-linkedin_sdata.drop(['indeed_links','indeed_titles','monster_links','monster_titles'], axis=1, inplace=True)
-linkedin_sdata.drop([1,2,3,4], axis=0, inplace=True)
-linkedin_sdata.reset_index(inplace=True)
-linkedin_sdata.drop(['index'], axis=1, inplace=True)
-
-linksA = linkedin_sdata.iloc[0,0]
+linksA = linkedin_sdata.iloc[0,2]
 linkedin_links_list = linksA.split(",")
 
-titlesA = linkedin_sdata.iloc[0,1]
+titlesA = linkedin_sdata.iloc[0,3]
 linkedin_titles_list = titlesA.split(',')
 
 for y in linkedin_titles_list:  # account for possibility of city,state format splitting at the comma 
     if len(y) < 7:
         indexValue2 = linkedin_titles_list.index(y)
         linkedin_titles_list.pop(indexValue2)
+
+linkedin_titles_list = linkedin_titles_list[:5]
+linkedin_links_list = linkedin_links_list[:5]
 
 linkedin_df = pd.DataFrame({'titles':linkedin_titles_list, 'links':linkedin_links_list}) #linkedin dataframe
 
@@ -117,7 +115,7 @@ monster_df = pd.DataFrame({'titles':monster_titles_list,'links':monster_links_li
 
 # Make entries in the GUI that shows job entries from dataframes
    #join all dataframes of data
-complete_df = pd.concat([indeed_df,linkedin_df,monster_df], axis=0)
+complete_df = pd.concat([indeed_df,monster_df,linkedin_df], axis=0)
 complete_df.reset_index(inplace=True)
 complete_df.drop(['index'], axis=1, inplace=True) #join all datafraemes into one
 
@@ -127,9 +125,7 @@ complete_dict = {}
 for x, y in complete_df['tuples']:
     complete_dict[x] = y    #create dictionary from the tuple column
 
-# Create buttons
-
-
+# Create buttons and command
 def clickURL(title):
     link = complete_dict.get(title)
     webbrowser.open(link,new=0)
@@ -138,8 +134,10 @@ for title in complete_dict:
     tbutton = tk.Button(canvas, text=title, bg='gray', command=lambda x=title: clickURL(x))
     tbutton.pack()
 
+# Delete dataframes for the next time user runs program
 
-#link = complete_df.loc[complete_df['titles'] == title, 'links'].iloc[0]
-#tbutton.cget('text')
+os.remove(indeedPath)
+os.remove(linkedinPath)
+os.remove(monsterPath)
 
 root.mainloop()
