@@ -12,19 +12,31 @@ import webbrowser
 # Create Tkinter root window
 root = tk.Tk()
 root.title('Job Board Aggregator')
-root.geometry('700x900')
-canvas = tk.Canvas(root)
-canvas.pack()
+#root.geometry('700x900')
 
-# GUI Title and Description
-label = tk.Label(canvas,text='CIS Job Board', font=(None, 25), height=2)
+# Create scrollabe widgit 
+container = ttk.Frame(root)
+canvas = tk.Canvas(container, width=600, height=700)
+scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+scrollable_frame = ttk.Frame(canvas, width=600, height=700)
+
+scrollable_frame.bind(
+    "<Configure>",
+    lambda e: canvas.configure(
+        scrollregion=canvas.bbox("all")
+    )
+)
+canvas.create_window((0, 0), window=scrollable_frame, anchor="nw", width=600, height=700)
+canvas.configure(yscrollcommand=scrollbar.set)
+
+#scrollable_frame.place(x=0, y=0, anchor="nw", width=385, height=460)
+
+# Create Title and Description
+label = tk.Label(scrollable_frame,text='CIS Job Board', font=(None, 25), height=2)
 label.pack()
-#label.grid(row=0,column=0, columnspan=2)
-
-label2 = tk.Label(canvas, text='See results from the top Computer Information System jobs from the most popular job boards \n \
+label2 = tk.Label(scrollable_frame, text='See results from the top Computer Information System jobs from the most popular job boards \n \
     (Indeed, Linkedin, and Monster)')
 label2.pack()
-#label2.grid(row=1,column=0, columnspan=2)
 
 
 # Run Spiders
@@ -144,8 +156,12 @@ def clickURL(title):
     webbrowser.open(link,new=0)
 
 for title in complete_dict:
-    tbutton = tk.Button(canvas, text=title, bg='gray', command=lambda x=title: clickURL(x))
+    tbutton = tk.Button(scrollable_frame, text=title, bg='gray', command=lambda x=title: clickURL(x))
     tbutton.pack()
+
+container.pack()
+canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
 
 # Delete dataframes for the next time user runs program
 
