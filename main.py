@@ -16,7 +16,6 @@ root.geometry('700x900')
 canvas = tk.Canvas(root)
 canvas.pack()
 
-
 # GUI Title and Description
 label = tk.Label(canvas,text='CIS Job Board', font=(None, 25), height=2)
 label.pack()
@@ -61,7 +60,7 @@ for i in link_list1:
     i = i[6:-2]
     indeed_links_list.append(i)
     
-del indeed_links_list[0]
+del indeed_links_list[0]  # delete ad on first entry
 #del indeed_links_list[14] # removes bad URL 
 
 
@@ -74,6 +73,14 @@ for z in indeed_titles_list:  # account for possibility of city,state format spl
     if len(z) < 7:
         indexValue1 = indeed_titles_list.index(z)
         indeed_titles_list.pop(indexValue1)
+
+titlesLen = len(indeed_titles_list)
+linksLen = len(indeed_links_list)
+
+if titlesLen != linksLen:     # makes sure lists are the same size
+    diff = titlesLen - linksLen
+    for i in range(diff):
+        indeed_titles_list.pop(i)
 
 indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':indeed_links_list}) #indeed dataframe
 
@@ -109,8 +116,14 @@ for i in monster_titles_list:  # account for possibility of city,state format sp
         indexValue3 = monster_titles_list.index(i)
         monster_titles_list.pop(indexValue3)
 
+monster_titles_list_clean = []
+for t in monster_titles_list:  #remove new lines from titles
+    t = t[:-4]
+    monster_titles_list_clean.append(t)
+
+#print(monster_titles_list)
     
-monster_df = pd.DataFrame({'titles':monster_titles_list,'links':monster_links_list})  # monster dataframe
+monster_df = pd.DataFrame({'titles':monster_titles_list_clean,'links':monster_links_list})  # monster dataframe
 
 
 # Make entries in the GUI that shows job entries from dataframes
@@ -141,3 +154,9 @@ os.remove(linkedinPath)
 os.remove(monsterPath)
 
 root.mainloop()
+
+
+# print(monster_titles_list)
+# for i in monster_titles_list:
+#     i = i[:-4]
+#     print(i)
