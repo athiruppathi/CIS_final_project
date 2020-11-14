@@ -32,7 +32,7 @@ canvas.configure(yscrollcommand=scrollbar.set)
 #scrollable_frame.place(x=0, y=0, anchor="nw", width=385, height=460)
 
 # Create Title and Description
-label = tk.Label(scrollable_frame,text='CIS Job Board', font=(None, 25), height=2)
+label = tk.Label(scrollable_frame,text='CIS Job Board', font=(None, 18), height=2)
 label.pack()
 label2 = tk.Label(scrollable_frame, text='See results from the top Computer Information System jobs from the most popular job boards \n \
     (Indeed, Linkedin, and Monster)')
@@ -130,10 +130,17 @@ for i in monster_titles_list:  # account for possibility of city,state format sp
 
 monster_titles_list_clean = []
 for t in monster_titles_list:  #remove new lines from titles
-    t = t[:-4]
+    t = t[:-2]
     monster_titles_list_clean.append(t)
 
-#print(monster_titles_list)
+mTitleLen = len(monster_titles_list_clean)
+mLinksLen = len(monster_links_list)
+
+if monster_titles_list_clean != monster_links_list:     # makes sure lists are the same size
+    diff2 = mTitleLen - mLinksLen
+    for i in range(diff2):
+        monster_titles_list_clean.pop(i)
+
     
 monster_df = pd.DataFrame({'titles':monster_titles_list_clean,'links':monster_links_list})  # monster dataframe
 
