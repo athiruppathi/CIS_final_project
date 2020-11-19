@@ -82,17 +82,21 @@ indeed_titles_list = titles_string1.split(",")
 del indeed_titles_list[0] #delete ad on the first entry
 
 for z in indeed_titles_list:  # account for possibility of city,state format splitting at the comma 
-    if len(z) < 7:
+    if len(z) < 11:
         indexValue1 = indeed_titles_list.index(z)
         indeed_titles_list.pop(indexValue1)
 
 titlesLen = len(indeed_titles_list)
 linksLen = len(indeed_links_list)
 
-if titlesLen != linksLen:     # makes sure lists are the same size
+if titlesLen > linksLen:     # makes sure lists are the same size
     diff = titlesLen - linksLen
     for i in range(diff):
         indeed_titles_list.pop(i)
+elif linksLen > titlesLen:
+    diff2 = linksLen - titlesLen
+    for i in range(diff2):
+        indeed_links_list.pop(i)
 
 indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':indeed_links_list}) #indeed dataframe
 
@@ -105,7 +109,7 @@ titlesA = linkedin_sdata.iloc[0,3]
 linkedin_titles_list = titlesA.split(',')
 
 for y in linkedin_titles_list:  # account for possibility of city,state format splitting at the comma 
-    if len(y) < 7:
+    if len(y) < 11:
         indexValue2 = linkedin_titles_list.index(y)
         linkedin_titles_list.pop(indexValue2)
 
@@ -124,7 +128,7 @@ monster_titles_string = monster_sdata.iloc[0,5]
 monster_titles_list = monster_titles_string.split(",")
 
 for i in monster_titles_list:  # account for possibility of city,state format splitting at the comma 
-    if len(i) < 7:
+    if len(i) < 11:
         indexValue3 = monster_titles_list.index(i)
         monster_titles_list.pop(indexValue3)
 
@@ -136,10 +140,14 @@ for t in monster_titles_list:  #remove new lines from titles
 mTitleLen = len(monster_titles_list_clean)
 mLinksLen = len(monster_links_list)
 
-if monster_titles_list_clean != monster_links_list:     # makes sure lists are the same size
-    diff2 = mTitleLen - mLinksLen
-    for i in range(diff2):
+if mTitleLen > mLinksLen: # makes sure lists are the same size
+    diff5 = mTitleLen - mLinksLen
+    for i in range(diff5):
         monster_titles_list_clean.pop(i)
+#elif mLinksLen > mTitleLen:
+#    diff6 = mLinksLen - mTitleLen
+#    for i in range(diff6):
+#        monster_links_list.pop(i)
 
     
 monster_df = pd.DataFrame({'titles':monster_titles_list_clean,'links':monster_links_list})  # monster dataframe
@@ -157,7 +165,7 @@ complete_dict = {}
 for x, y in complete_df['tuples']:
     complete_dict[x] = y    #create dictionary from the tuple column
 
-# Create buttons and command
+# Create buttons and click command
 def clickURL(title):
     link = complete_dict.get(title)
     webbrowser.open(link,new=0)
@@ -177,9 +185,3 @@ os.remove(linkedinPath)
 os.remove(monsterPath)
 
 root.mainloop()
-
-
-# print(monster_titles_list)
-# for i in monster_titles_list:
-#     i = i[:-4]
-#     print(i)
