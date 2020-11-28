@@ -34,7 +34,7 @@ canvas.configure(yscrollcommand=scrollbar.set)
 # Create Title and Description
 label = tk.Label(scrollable_frame,text='CIS Job Board', font=(None, 18), height=2)
 label.pack()
-label2 = tk.Label(scrollable_frame, text='See results from the top Computer Information System jobs from the most popular job boards \n \
+label2 = tk.Label(scrollable_frame, text='See the top Computer Information System jobs from the most popular job boards \n \
     (Indeed, Linkedin, and Monster)')
 label2.pack()
 
@@ -63,42 +63,20 @@ monster_sdata = pd.read_csv(monsterPath)
 
 #Indeed 
 
-link_string1 = indeed_sdata.iloc[0,0]
-link_string1 = link_string1[1:-2]
-link_list1 = link_string1.split(",")
+indeed_links = indeed_sdata.iloc[0,0]
+indeed_titles = indeed_sdata.iloc[0,1]
 
-indeed_links_list = []
-for i in link_list1:
-    i = i[6:-2]
-    indeed_links_list.append(i)
-    
-del indeed_links_list[0]  # delete ad on first entry
-#del indeed_links_list[14] # removes bad URL 
+indeed_links = indeed_links[:-2]
+indeed_links_list = indeed_links.split(',')
+iLinksList = []
+for i in indeed_links_list:
+    i = i[6:-1]
+    iLinksList.append(i)
 
 
-titles_string1 = indeed_sdata.iloc[0,1]
-indeed_titles_list = titles_string1.split(",")
+indeed_titles_list = indeed_titles.split(',')
 
-del indeed_titles_list[0] #delete ad on the first entry
-
-for z in indeed_titles_list:  # account for possibility of city,state format splitting at the comma 
-    if len(z) < 11:
-        indexValue1 = indeed_titles_list.index(z)
-        indeed_titles_list.pop(indexValue1)
-
-titlesLen = len(indeed_titles_list)
-linksLen = len(indeed_links_list)
-
-if titlesLen > linksLen:     # makes sure lists are the same size
-    diff = titlesLen - linksLen
-    for i in range(diff):
-        indeed_titles_list.pop(i)
-elif linksLen > titlesLen:
-    diff2 = linksLen - titlesLen
-    for i in range(diff2):
-        indeed_links_list.pop(i)
-
-indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':indeed_links_list}) #indeed dataframe
+indeed_df = pd.DataFrame({'titles':indeed_titles_list,'links':iLinksList}) #indeed dataframe
 
 
 #Linkedin
@@ -125,32 +103,15 @@ monster_links_string = monster_sdata.iloc[0,4]
 monster_links_list = monster_links_string.split(",")
 
 monster_titles_string = monster_sdata.iloc[0,5]
-monster_titles_list = monster_titles_string.split(",")
-
-for i in monster_titles_list:  # account for possibility of city,state format splitting at the comma 
-    if len(i) < 11:
-        indexValue3 = monster_titles_list.index(i)
-        monster_titles_list.pop(indexValue3)
-
-monster_titles_list_clean = []
-for t in monster_titles_list:  #remove new lines from titles
-    t = t[:-2]
-    monster_titles_list_clean.append(t)
-
-mTitleLen = len(monster_titles_list_clean)
-mLinksLen = len(monster_links_list)
-
-if mTitleLen > mLinksLen: # makes sure lists are the same size
-    diff5 = mTitleLen - mLinksLen
-    for i in range(diff5):
-        monster_titles_list_clean.pop(i)
-#elif mLinksLen > mTitleLen:
-#    diff6 = mLinksLen - mTitleLen
-#    for i in range(diff6):
-#        monster_links_list.pop(i)
-
+monster_titles_list = monster_titles_string.split("\n")
+mTitlesList = [monster_titles_list[0]]
+for i in monster_titles_list:
+    i = i[1:]
+    mTitlesList.append(i)
+del mTitlesList[1]
+del mTitlesList[-1]
     
-monster_df = pd.DataFrame({'titles':monster_titles_list_clean,'links':monster_links_list})  # monster dataframe
+monster_df = pd.DataFrame({'titles':mTitlesList,'links':monster_links_list})  # monster dataframe
 
 
 # Make entries in the GUI that shows job entries from dataframes
