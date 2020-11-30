@@ -3,8 +3,8 @@ from tkinter import ttk
 from jobs.spiders import indeed
 from jobs.spiders import linkedin
 from jobs.spiders import monster 
-import re
 from scrapy.crawler import CrawlerProcess
+import re
 import pandas as pd 
 import os
 import webbrowser
@@ -88,7 +88,7 @@ monster_df = pd.DataFrame({'titles':mTitlesList,'links':monster_links_list})  # 
 
 
 # Combine Dataframes and convert into dictionary 
-complete_df = pd.concat([indeed_df,monster_df,linkedin_df], axis=0)
+complete_df = pd.concat([indeed_df,linkedin_df,monster_df], axis=0)
 complete_df.reset_index(inplace=True)
 complete_df.drop(['index'], axis=1, inplace=True) #join all datafraemes into one
 
