@@ -24,6 +24,4 @@ class MonsterSpider(scrapy.Spider):
         items['monster_links'] = links
         yield items
 
-        #yield {'titles':titles, 'links':links}
-
-# need to clean up titles list
+        

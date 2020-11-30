@@ -30,5 +30,3 @@ class IndeedSpider(scrapy.Spider):
         items['indeed_titles'] = titles
         items['indeed_links'] = absolute_url_list
         yield items
-        #yield {'titles':titles, 'links':absolute_url_list}
-

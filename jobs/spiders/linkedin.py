@@ -21,7 +21,5 @@ class LinkedinSpider(scrapy.Spider):
         items['linkedin_titles'] = titles
         items['linkedin_links'] = links
         yield items
-        
-        #yield {'titles':titles,'links':links}
 
 #returns 25 entries of each 
