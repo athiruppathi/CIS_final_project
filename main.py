@@ -1,5 +1,4 @@
 import tkinter as tk 
-from tkinter import ttk
 from jobs.spiders import indeed
 from jobs.spiders import linkedin
 from jobs.spiders import monster 
